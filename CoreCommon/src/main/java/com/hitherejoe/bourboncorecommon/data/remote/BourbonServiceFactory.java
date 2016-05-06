@@ -1,6 +1,8 @@
 package com.hitherejoe.bourboncorecommon.data.remote;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.hitherejoe.bourboncorecommon.BuildConfig;
 
 import okhttp3.OkHttpClient;
@@ -21,11 +23,14 @@ public class BourbonServiceFactory {
     }
 
     public static BourbonService makeBourbonService(OkHttpClient okHttpClient) {
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BuildConfig.DRIBBBLE_API_URL)
                 .client(okHttpClient)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         return retrofit.create(BourbonService.class);
     }
